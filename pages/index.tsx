@@ -14,18 +14,10 @@ export default function Index() {
   if (!data) return null;
 
   return (
-    <div>
-      <h1 className={styles.title}>Hello Terralics!</h1>
-      <ul>
-        {data.map((user) => (
-          <li key={user.id}>
-            <Link href="/user/[id]" as={`/user/${user.id}`}>
-              {user.name ?? `User ${user.id}`}
-            </Link>
-          </li>
-        ))}
-      </ul>
+    <div className = {styles.container}>
+      <h1 className = {styles.title}>Terralics</h1>
       <Cube />
     </div>
+    
   );
 }

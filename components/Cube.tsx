@@ -10,7 +10,7 @@ import {
 
 export default function Cube() {
   const scene = new Scene();
-  scene.background = new Color(0xffffff);
+  scene.background = new Color(null);
   const camera = new PerspectiveCamera(
     75,
     window.innerWidth / window.innerHeight,
@@ -18,12 +18,12 @@ export default function Cube() {
     1000
   );
 
-  const renderer = new WebGLRenderer();
-  renderer.setSize(window.innerWidth / 2, window.innerHeight / 2);
+  const renderer = new WebGLRenderer( {alpha: true} );
+  renderer.setSize(0.75 * window.innerWidth, 0.75 * window.innerHeight);
   document.body.appendChild(renderer.domElement);
 
   const geometry = new BoxGeometry(1, 1, 1);
-  const material = new MeshBasicMaterial({ color: 0x9900cc });
+  const material = new MeshBasicMaterial({ color: "rgb(236, 249, 255)" });
   const cube = new Mesh(geometry, material);
   scene.add(cube);
 
@@ -31,8 +31,8 @@ export default function Cube() {
 
   function animate() {
     requestAnimationFrame(animate);
-    cube.rotation.x += 0.01;
-    cube.rotation.y += 0.01;
+    cube.rotation.x += 0.005;
+    cube.rotation.y += 0.005;
     renderer.render(scene, camera);
   }
   animate();
