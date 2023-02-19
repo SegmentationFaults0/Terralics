@@ -1,12 +1,12 @@
+@import url('https://fonts.googleapis.com/css2?family=Saira+Semi+Condensed:wght@400;500&display=swap');
+
 .container{
-  height: 100vh;
-  width: 100vw;
-  background: linear-gradient(to right, #24243e, #302b63, #0f0c29);
   text-align: center;
-  overflow: hidden;
 }
 
 .title {
-  margin-top: 10vh;
-  color: white;
+  color: rgb(240, 239, 245);
+  font-family: 'Saira Semi Condensed', sans-serif;
+  font-size: 96px;
+  text-shadow: 0 2px 4px rgb(43, 16, 83);
 }
