@@ -102,7 +102,6 @@ export default function Cube() {
     const elapsed = clock.getElapsedTime();
     controls.update();
     globe.rotation.y = elapsed * 0.1;
-    globe.rotation.x = elapsed * 0.05;
     renderer.render(scene, camera);
     requestAnimationFrame(animate);
   }
