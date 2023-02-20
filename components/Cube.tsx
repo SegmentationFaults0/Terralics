@@ -13,8 +13,8 @@ import {
   useLoader,
 } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-import globeAlbedo from 'public/Albedo-diffuse.jpg';
-import globeBumpMap from 'public/Bump.jpg';
+//import globeAlbedo from 'public/Albedo-diffuse.jpg';
+//import globeBumpMap from 'public/Bump.jpg';
 
 export default function Cube() {
   const sizes = {
@@ -28,8 +28,9 @@ export default function Cube() {
   // Loaders
   const loadingManager = new LoadingManager();
   const textureLoader = new TextureLoader(loadingManager);
-  const globeTexture = textureLoader.load(globeAlbedo);
-  const globeBump = textureLoader.load(globeBumpMap);
+  // hardcoded, but works. gotta figure this one out
+  const globeTexture = textureLoader.load("/_next/static/media/Albedo-diffuse.07e9eb21.jpg");
+  const globeBump = textureLoader.load("/_next/image?url=%2F_next%2Fstatic%2Fmedia%2FBump.39a96e1d.jpg&w=8&q=70");
   loadingManager.onStart = () => {
     console.log('loading started');
   }
@@ -102,6 +103,7 @@ export default function Cube() {
     const elapsed = clock.getElapsedTime();
     controls.update();
     globe.rotation.y = elapsed * 0.1;
+    globe.rotation.x = elapsed * 0.05;
     renderer.render(scene, camera);
     requestAnimationFrame(animate);
   }
