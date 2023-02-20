@@ -2,6 +2,7 @@ import type { User } from "../interfaces";
 import useSwr from "swr";
 import Link from "next/link";
 import Cube from "../components/Cube";
+import styles from "../styles/Home.module.css";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
@@ -13,18 +14,10 @@ export default function Index() {
   if (!data) return null;
 
   return (
-    <div>
-      <h1>Hello Terralics!</h1>
-      <ul>
-        {data.map((user) => (
-          <li key={user.id}>
-            <Link href="/user/[id]" as={`/user/${user.id}`}>
-              {user.name ?? `User ${user.id}`}
-            </Link>
-          </li>
-        ))}
-      </ul>
+    <div className = {styles.container}>
+      <h1 className = {styles.title}>Terralics</h1>
       <Cube />
     </div>
+    
   );
 }
