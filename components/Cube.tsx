@@ -3,12 +3,18 @@ import {
   PerspectiveCamera,
   WebGLRenderer,
   SphereGeometry,
-  MeshStandardMaterial,
+  MeshBasicMaterial,
   Mesh,
   PointLight,
   AmbientLight,
+  Clock,
+  LoadingManager,
+  TextureLoader,
+  useLoader,
 } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+import globeAlbedo from 'public/Albedo-diffuse.jpg';
+import globeBumpMap from 'public/Bump.jpg';
 
 export default function Cube() {
   const sizes = {
@@ -19,61 +25,83 @@ export default function Cube() {
   const scene = new Scene();
   scene.background = null;
 
+  // Loaders
+  const loadingManager = new LoadingManager();
+  const textureLoader = new TextureLoader(loadingManager);
+  const globeTexture = textureLoader.load(globeAlbedo);
+  const globeBump = textureLoader.load(globeBumpMap);
+  loadingManager.onStart = () => {
+    console.log('loading started');
+  }
+  loadingManager.onLoad = () => {
+    console.log('loading finished');
+  }
+  loadingManager.onProgress = () => {
+    console.log('loading progressing');
+  }
+  loadingManager.onError = () => {
+    console.log('loading ERROR');
+  }
+
+  // Object
+  const globeGeometry = new SphereGeometry(3, 64, 64);
+  const globeMaterial = new MeshBasicMaterial({
+    // wireframe: true,
+    map: globeTexture,
+    bumpMap: globeBump,
+  });
+  const globe = new Mesh(globeGeometry, globeMaterial);
+  scene.add(globe);
+
   // Camera
   const camera = new PerspectiveCamera(
-    50,
+    45,
     sizes.width / sizes.height,
     0.1,
-    1000
+    110,
   );
-  camera.position.z = 5;
+  camera.position.z = 15;
   scene.add(camera);
 
   // Lighting
-  const light = new PointLight(0xffffff, 1, 100);
-  light.position.set(0, 5, 5);
-  light.intensity = 1.25;
-  scene.add(light);
-  const ambient = new AmbientLight(0xffffff);
-  scene.add(ambient);
+  const ambientLight = new AmbientLight(0xffffff, 1);
+  scene.add(ambientLight);
 
   // Rendering
-  const renderer = new WebGLRenderer({ alpha: true });
+  const renderer = new WebGLRenderer({ alpha: true, antialias: true });
   renderer.setSize(sizes.width, sizes.height);
-  renderer.setPixelRatio(2);
-  renderer.render(scene, camera);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
   document.body.appendChild(renderer.domElement);
-
-  // Object
-  const geometry = new SphereGeometry(1, 32, 32);
-  const material = new MeshStandardMaterial({
-    color: 0xffffff,
-    wireframe: true,
-  });
-  const cube = new Mesh(geometry, material);
-  scene.add(cube);
+  renderer.render(scene, camera);
 
   // OrbitControls
   const controls = new OrbitControls(camera, renderer.domElement);
   controls.enableDamping = true;
   controls.enablePan = false;
   controls.enableZoom = false;
+  controls.minPolarAngle = Math.PI / 2;
+  controls.maxPolarAngle = Math.PI / 2;
 
   // PageResisingProblem-Solver 3000 v1 alpha beta pro max
-  // TODO: werkt nog niet bij resize door middel van windows-knop
-  window.addEventListener("resize", () => {
-    sizes.width = window.innerWidth;
-    sizes.height = window.innerHeight;
-    camera.updateProjectionMatrix();
-    camera.aspect = sizes.width / sizes.height;
-    renderer.setSize(sizes.width, sizes.height);
-  });
+  // TODO: werkt nog niet bij resize door middel van maximise-knop
+  //Resize
+  const updateResize = () => {
+    sizes.width = window.innerWidth
+    sizes.height = window.innerHeight
+    camera.updateProjectionMatrix()
+    camera.aspect = sizes.width/sizes.height
+    renderer.setSize(sizes.width, sizes.height)
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+  }
+  window.addEventListener('resize', () => {
+    updateResize()
+  })
 
-  // TODO: vaste framerate?
+  const clock = new Clock();
   function animate() {
+    const elapsed = clock.getElapsedTime();
     controls.update();
-    cube.rotation.x += 0.0001;
-    cube.rotation.y += 0.001;
+    globe.rotation.y = elapsed * 0.1;
     renderer.render(scene, camera);
     requestAnimationFrame(animate);
   }
