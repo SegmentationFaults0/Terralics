@@ -1,7 +1,11 @@
 body {
-  font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
   margin: 0;
-  background: linear-gradient(to right, rgb(3, 5, 58), rgb(3, 1, 29), rgb(17, 3, 56));
+  background: linear-gradient(
+    to right,
+    rgb(3, 5, 58),
+    rgb(3, 1, 29),
+    rgb(17, 3, 56)
+  );
 }
 
 canvas {
