@@ -1,13 +1,13 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
 
-.container{
-  text-align: center;
+.container {
+  margin: 10%;
 }
 
 .title {
   color: rgb(255, 255, 255);
-  font-family: 'Roboto', sans-serif;
-  font-size: 48px;
+  font-family: "Poppins", sans-serif;
+  font-size: 60px;
   text-shadow: 0 0px 1px rgb(0, 0, 0);
   margin-top: 56px;
 }

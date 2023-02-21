@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   Scene,
   PerspectiveCamera,
@@ -10,15 +11,17 @@ import {
   Clock,
   LoadingManager,
   TextureLoader,
-  useLoader,
   UniformsUtils,
   ShaderMaterial,
   BackSide,
   AdditiveBlending,
 } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+import LoadingAnimation from "./LoadingAnimation";
 
 export default function Cube() {
+  const [loaded, setLoaded] = useState(false);
+
   const sizes = {
     width: window.innerWidth,
     height: window.innerHeight,
@@ -30,13 +33,14 @@ export default function Cube() {
   // Loaders
   const loadingManager = new LoadingManager();
   const textureLoader = new TextureLoader(loadingManager);
-  const globeTexture = textureLoader.load("/textures/earth-day.jpg");
-  const globeBump = textureLoader.load("/textures/earth-topology.png");
+  const globeTexture = textureLoader.load("/Albedo-diffuse.jpg");
+  // const globeBump = textureLoader.load("/textures/earth-topology.png");
   loadingManager.onStart = () => {
     console.log("loading started");
   };
   loadingManager.onLoad = () => {
     console.log("loading finished");
+    setLoaded(true);
   };
   loadingManager.onProgress = () => {
     console.log("loading progressing");
@@ -53,6 +57,7 @@ export default function Cube() {
     //bumpMap: globeBump,
   });
   const globe = new Mesh(globeGeometry, globeMaterial);
+  globe.visible = true;
   scene.add(globe);
 
   // Custom shader for outer glow V1
@@ -67,13 +72,13 @@ export default function Cube() {
     "}",
   ].join("\n");
 
-  let glowIntensity = 0.85;
+  let glowIntensity = 0.8;
   let fragmentShader = [
     "varying vec3 vNormal;",
     "varying vec3 vPosition;",
 
     "void main() {",
-    "vec3 lightPosition = vec3(-10.0, 10.0, 0.0);",
+    "vec3 lightPosition = vec3(-10.0, 6.0, 16);",
     "vec3 lightDirection = normalize(lightPosition - vPosition);",
     "float dotNL = clamp(dot(lightDirection, vNormal), 0.0, 1.0);",
     `float intensity = pow( ${glowIntensity} - dot( vNormal, vec3( 0, 0, 1.0 ) ), 12.0 );`,
@@ -82,7 +87,7 @@ export default function Cube() {
   ].join("\n");
 
   var uniforms = UniformsUtils.clone({});
-  var material = new ShaderMaterial({
+  var glowMaterial = new ShaderMaterial({
     uniforms: uniforms,
     vertexShader: vertexShader,
     fragmentShader: fragmentShader,
@@ -91,8 +96,8 @@ export default function Cube() {
     transparent: true,
   });
 
-  var glowMesh = new Mesh(globeGeometry, material);
-  glowMesh.scale.set(1.09, 1.09, 1.09);
+  var glowMesh = new Mesh(globeGeometry, glowMaterial);
+  glowMesh.scale.set(1.13, 1.13, 1.13);
   scene.add(glowMesh);
 
   // Camera
@@ -102,17 +107,15 @@ export default function Cube() {
     0.1,
     110
   );
-  camera.position.x = 0;
-  camera.position.y = 1;
-  camera.position.z = 15;
+  camera.position.set(0, 1, 10);
   scene.add(camera);
 
   // Lighting
-  let light1Offset = [-10, 5, 1]; // TODO: is toch gewoon light - camera pos?
-  const light1 = new PointLight(0xffffff, 1, 100);
+  const light1 = new PointLight(0xf4e99b, 1, 100);
   light1.position.set(-10, 6, 16);
-  light1.intensity = 1.7;
+  light1.intensity = 1.8;
   scene.add(light1);
+  camera.add(light1);
   const ambientLight = new AmbientLight(0xffffff, 0.1);
   scene.add(ambientLight);
 
@@ -128,14 +131,7 @@ export default function Cube() {
   controls.enableDamping = true;
   controls.enablePan = false;
   controls.enableZoom = false;
-  // controls.minPolarAngle = Math.PI / 2;
-  // controls.maxPolarAngle = Math.PI / 2;
-  controls.addEventListener("change", light_update);
-  function light_update() {
-    light1.position.copy(camera.position);
-  }
 
-  // PageResisingProblem-Solver 3000 v1 alpha beta pro max
   // TODO: werkt nog niet bij resize door middel van maximise-knop
   //Resize
   const updateResize = () => {
@@ -160,5 +156,5 @@ export default function Cube() {
   }
   animate();
 
-  return <></>;
+  return <div>{loaded ? <></> : <LoadingAnimation />}</div>;
 }
