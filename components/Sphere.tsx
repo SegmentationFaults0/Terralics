@@ -19,7 +19,7 @@ import {
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import LoadingAnimation from "./LoadingAnimation";
 
-export default function Cube() {
+export default function Sphere() {
   const [loaded, setLoaded] = useState(false);
 
   const sizes = {
@@ -97,12 +97,12 @@ export default function Cube() {
   });
 
   var glowMesh = new Mesh(globeGeometry, glowMaterial);
-  glowMesh.scale.set(1.13, 1.13, 1.13);
+  glowMesh.scale.set(1.15, 1.15, 1.10);
   scene.add(glowMesh);
 
   // Camera
   const camera = new PerspectiveCamera(
-    45,
+    47.5,
     sizes.width / sizes.height,
     0.1,
     110
@@ -155,6 +155,6 @@ export default function Cube() {
     requestAnimationFrame(animate);
   }
   animate();
-
+  
   return <div>{loaded ? <></> : <LoadingAnimation />}</div>;
 }
