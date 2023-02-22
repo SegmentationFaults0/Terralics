@@ -2,7 +2,7 @@ import type { User } from "../interfaces";
 import useSwr from "swr";
 import Sphere from "../components/Sphere";
 import styles from "../styles/Home.module.css";
-import ToggleSwitch from "../components/toggleSwitch";
+import ToggleSwitch from "../components/ToggleSwitch";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 

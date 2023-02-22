@@ -2,15 +2,15 @@
   cursor: pointer;
   display: inline-block;
   position: absolute;
-  bottom: 0;
+  top: 0;
   right: 0;
-  margin-bottom: 20px;
+  margin-top: 20px;
   margin-right: 20px;
 }
 
 .switch {
   display: inline-block;
-  background: #880ED4;
+  background: #534fc6;
   border-radius: 16px;
   width: 58px;
   height: 32px;
@@ -36,7 +36,7 @@
   background: rgb(245, 245, 245);
 }
 .checkbox:checked + .switch {
-  background: #FAD02C;
+  background: #89CFF0;
 }
 .checkbox:checked + .switch:before {
   left: 30px;
