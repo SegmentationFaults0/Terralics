@@ -18,9 +18,12 @@
   vertical-align: middle;
   transition: background 0.25s;
 }
-.switch:before, .switch:after {
+
+.switch:before,
+.switch:after {
   content: "";
 }
+
 .switch:before {
   display: block;
   background: white;
@@ -32,12 +35,15 @@
   left: 4px;
   transition: left 0.25s;
 }
+
 .toggle:hover .switch:before {
   background: rgb(245, 245, 245);
 }
+
 .checkbox:checked + .switch {
-  background: #89CFF0;
+  background: #89cff0;
 }
+
 .checkbox:checked + .switch:before {
   left: 30px;
 }
