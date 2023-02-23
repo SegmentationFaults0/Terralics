@@ -1,0 +1,26 @@
+.zoombutton {
+  background-color: #534fc6;
+  border-radius: 50%;
+  color: white;
+  border: none;
+  padding: none;
+  font-size: 20px;
+  height: 40px;
+  width: 40px;
+  box-shadow: 0 1px 2px darkslategray;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.zoombutton:hover {
+  background-color: #5955c6;
+}
+
+.zoomcontainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  position: absolute;
+  top: 50%;
+  margin-left: 10px;
+}

@@ -18,9 +18,12 @@ import {
 } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import LoadingAnimation from "./LoadingAnimation";
+import styles from "../styles/Sphere.module.css";
+import { Z_NO_COMPRESSION } from "zlib";
 
 export default function Sphere() {
   const [loaded, setLoaded] = useState(false);
+  const [userInteracted, setUserInteracted] = useState(false);
   const mountRef = useRef<HTMLDivElement>(null);
   const sizes = {
     width: window.innerWidth,
@@ -40,7 +43,6 @@ export default function Sphere() {
     const loadingManager = new LoadingManager();
     const textureLoader = new TextureLoader(loadingManager);
     const globeTexture = textureLoader.load("/Albedo-diffuse.jpg");
-    const globeBump = textureLoader.load("/textures/earth-topology.png");
     loadingManager.onStart = () => {
       console.log("loading started");
     };
@@ -60,7 +62,6 @@ export default function Sphere() {
     const globeMaterial = new MeshStandardMaterial({
       // wireframe: true,
       map: globeTexture,
-      bumpMap: globeBump,
     });
     const globe = new Mesh(globeGeometry, globeMaterial);
     globe.visible = true;
@@ -104,6 +105,7 @@ export default function Sphere() {
 
     var glowMesh = new Mesh(globeGeometry, glowMaterial);
     glowMesh.scale.set(1.15, 1.15, 1.1);
+    glowMesh.visible = true;
     scene.add(glowMesh);
 
     // Camera
@@ -157,11 +159,49 @@ export default function Sphere() {
       updateResize();
     });
 
+    // TODO: how to check if user has clicked?
+    // TODO: how to handle zoom-button functions?
+
+    const zoomIn = () => {
+      const fov = getFov();
+      camera.fov = clickZoom(fov, "zoomIn");
+      camera.updateProjectionMatrix();
+    };
+
+    const zoomOut = () => {
+      const fov = getFov();
+      camera.fov = clickZoom(fov, "zoomOut");
+      camera.updateProjectionMatrix();
+    };
+    const maxZoom = 20;
+    const minZoom = 75;
+    const zoomStep = 5;
+    const clickZoom = (value, zoomType) => {
+      if (value >= maxZoom && zoomType === "zoomIn") {
+        return value - zoomStep;
+      } else if (value <= minZoom && zoomType === "zoomOut") {
+        return value + zoomStep;
+      } else {
+        return value;
+      }
+    };
+
+    const getFov = () => {
+      return Math.floor(
+        (2 *
+          Math.atan(camera.getFilmHeight() / 2 / camera.getFocalLength()) *
+          180) /
+          Math.PI
+      );
+    };
+
     const clock = new Clock();
     function animate() {
       const elapsed = clock.getElapsedTime();
       controls.update();
-      globe.rotation.y = elapsed * 0.1;
+      if (!userInteracted) {
+        globe.rotation.y = elapsed * 0.1;
+      }
       renderer.render(scene, camera);
       requestAnimationFrame(animate);
     }
@@ -172,5 +212,20 @@ export default function Sphere() {
     };
   }, []);
 
-  return <div ref={mountRef}>{loaded ? <></> : <LoadingAnimation />}</div>;
+  return (
+    <div ref={mountRef}>
+      {loaded ? (
+        <div className={styles.zoomcontainer}>
+          <button className={styles.zoombutton} type="button" onClick={}>
+            +
+          </button>
+          <button className={styles.zoombutton} type="button" onClick={}>
+            -
+          </button>
+        </div>
+      ) : (
+        <LoadingAnimation />
+      )}
+    </div>
+  );
 }
