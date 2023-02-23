@@ -31,11 +31,6 @@ export default function Sphere() {
     width: window.innerWidth,
     height: window.innerHeight,
   };
-  let coordinaten = {
-    x: 0,
-    y: 0,
-    z: 0,
-  };
   const radius = 3;
 
   const scene = new Scene();
@@ -121,7 +116,7 @@ export default function Sphere() {
   scene.add(camera);
 
   // Lighting
-  const light1 = new PointLight(0xf4e99b, 1, 100);
+  const light1 = new PointLight(0xf3edba, 1, 100);
   light1.position.set(-10, 6, 16);
   light1.intensity = 1.8;
   scene.add(light1);
@@ -133,35 +128,8 @@ export default function Sphere() {
   const zoomIn = () => {};
   const zoomOut = () => {};
 
-  // COORDINATENMAPPER
-  const breedtegraadB = 0.88744;
-  const lengtegraadB = 0.075951;
-
-  const mapToCarth = (lengtegraad, breedtegraad) => {
-    let x = radius * Math.sin(lengtegraad) * Math.cos(breedtegraad);
-    let y = radius * Math.sin(lengtegraad) * Math.sin(breedtegraad);
-    let z = radius * Math.cos(lengtegraad);
-    return new Vector3(x, y, z);
-  };
-
-  const drawPoint = (vector) => {
-    const pointGeometry = new SphereGeometry(0.1, 12, 12);
-    const pointMaterial = new MeshStandardMaterial({
-      color: 0xff0000,
-    });
-    const point = new Mesh(pointGeometry, pointMaterial);
-    point.position.set(vector.x, vector.y, vector.z);
-    scene.add(point);
-    globe.add(point);
-  };
-
   useEffect(() => {
     const { current } = mountRef;
-    if (!current) {
-      return;
-    }
-
-    drawPoint(mapToCarth(lengtegraadB, breedtegraadB));
 
     // Rendering
     const renderer = new WebGLRenderer({
