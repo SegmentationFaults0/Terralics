@@ -1,8 +1,8 @@
 import type { User } from "../interfaces";
 import useSwr from "swr";
-import Link from "next/link";
-import Cube from "../components/Cube";
-import styles from "../styles/Home.module.css";
+import Sphere from "../components/Sphere";
+import ExplanationPage from "../components/ExplanationPage";
+import Navbar from "../components/Navbar";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
@@ -14,10 +14,12 @@ export default function Index() {
   if (!data) return null;
 
   return (
-    <div className = {styles.container}>
-      <h1 className = {styles.title}>Terralics</h1>
-      <Cube />
+    <div>
+      <div>
+        <Navbar />
+        <Sphere />
+      </div>
+      <ExplanationPage />
     </div>
-    
   );
 }
