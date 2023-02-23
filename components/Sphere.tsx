@@ -20,6 +20,7 @@ import {
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import LoadingAnimation from "./LoadingAnimation";
 import styles from "../styles/Sphere.module.css";
+import { isModuleNamespaceObject } from "util/types";
 
 export default function Sphere() {
   const [loaded, setLoaded] = useState(false);
@@ -30,6 +31,12 @@ export default function Sphere() {
     width: window.innerWidth,
     height: window.innerHeight,
   };
+  let coordinaten = {
+    x: 0,
+    y: 0,
+    z: 0,
+  };
+  const radius = 3;
 
   const scene = new Scene();
   scene.background = null;
@@ -53,7 +60,7 @@ export default function Sphere() {
   };
 
   // Object
-  const globeGeometry = new SphereGeometry(3, 64, 64);
+  const globeGeometry = new SphereGeometry(radius, 64, 64);
   const globeMaterial = new MeshStandardMaterial({
     // wireframe: true,
     map: globeTexture,
@@ -63,7 +70,7 @@ export default function Sphere() {
   scene.add(globe);
 
   // Custom shader for outer glow V1
-  let vertexShader = [
+  const vertexShader = [
     "varying vec3 vNormal;",
     "varying vec3 vPosition;",
     "void main() {",
@@ -74,8 +81,8 @@ export default function Sphere() {
     "}",
   ].join("\n");
 
-  let glowIntensity = 0.8;
-  let fragmentShader = [
+  const glowIntensity = 0.8;
+  const fragmentShader = [
     "varying vec3 vNormal;",
     "varying vec3 vPosition;",
 
@@ -88,8 +95,8 @@ export default function Sphere() {
     "}",
   ].join("\n");
 
-  var uniforms = UniformsUtils.clone({});
-  var glowMaterial = new ShaderMaterial({
+  const uniforms = UniformsUtils.clone({});
+  const glowMaterial = new ShaderMaterial({
     uniforms: uniforms,
     vertexShader: vertexShader,
     fragmentShader: fragmentShader,
@@ -98,7 +105,7 @@ export default function Sphere() {
     transparent: true,
   });
 
-  var glowMesh = new Mesh(globeGeometry, glowMaterial);
+  const glowMesh = new Mesh(globeGeometry, glowMaterial);
   glowMesh.scale.set(1.15, 1.15, 1.1);
   glowMesh.visible = true;
   scene.add(glowMesh);
@@ -126,11 +133,35 @@ export default function Sphere() {
   const zoomIn = () => {};
   const zoomOut = () => {};
 
+  // COORDINATENMAPPER
+  const breedtegraadB = 0.88744;
+  const lengtegraadB = 0.075951;
+
+  const mapToCarth = (lengtegraad, breedtegraad) => {
+    let x = radius * Math.sin(lengtegraad) * Math.cos(breedtegraad);
+    let y = radius * Math.sin(lengtegraad) * Math.sin(breedtegraad);
+    let z = radius * Math.cos(lengtegraad);
+    return new Vector3(x, y, z);
+  };
+
+  const drawPoint = (vector) => {
+    const pointGeometry = new SphereGeometry(0.1, 12, 12);
+    const pointMaterial = new MeshStandardMaterial({
+      color: 0xff0000,
+    });
+    const point = new Mesh(pointGeometry, pointMaterial);
+    point.position.set(vector.x, vector.y, vector.z);
+    scene.add(point);
+    globe.add(point);
+  };
+
   useEffect(() => {
     const { current } = mountRef;
     if (!current) {
       return;
     }
+
+    drawPoint(mapToCarth(lengtegraadB, breedtegraadB));
 
     // Rendering
     const renderer = new WebGLRenderer({
@@ -150,7 +181,7 @@ export default function Sphere() {
     controls.enablePan = false;
     controls.enableZoom = false;
 
-    // TODO: werkt nog niet bij resize door middel van maximise-knop
+    //werkt nog niet bij resize door middel van maximise-knop
     //Resize
     const updateResize = () => {
       sizes.width = window.innerWidth;
