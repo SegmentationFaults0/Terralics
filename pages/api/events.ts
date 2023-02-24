@@ -24,9 +24,6 @@ export default async function handler(
       selectProps("id", "title", "description", "categories", "geometries")
     );
 
-    // checking whether linter CI fails...
-    let myVar = 5;
-
     res.status(200).json(events);
   } catch (err) {
     console.log(err);
