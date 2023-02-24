@@ -17,7 +17,7 @@ export default async function handler(
 ) {
   try {
     const response = await fetch(
-      `https://eonet.gsfc.nasa.gov/api/v2.1/events?limit=5&status=open&api_key=${process.env.NASA_API_KEY}`
+      `https://eonet.gsfc.nasa.gov/api/v2.1/events?limit=10&status=open&api_key=${process.env.NASA_API_KEY}`
     );
     const { events: rawEvents } = await response.json();
     const events: Event[] = rawEvents.map(
