@@ -1,12 +1,32 @@
-body {
-  margin: 0;
-  background: linear-gradient(
+:root {
+  --background-color: linear-gradient(
     to right,
     rgb(3, 5, 58),
     rgb(3, 1, 29),
     rgb(17, 3, 56)
   );
+  --explanation: #534fc6;
+  --zoombutton: #534fc6;
+  --zoombutton-hover: #5955c6;
+  --title: #f5fdfe;
+  --explanation-text: #f5fdfe;
+  --shadows: 0 1px 2px rgb(0, 0, 0);
+}
+
+[data-theme="light"] {
+  --background-color: #dceed0;
+  --explanation: linear-gradient(-60deg, #4da016 0%, #b4d63a 100%);
+  --zoombutton: #b4d63a;
+  --zoombutton-hover: rgb(238, 235, 248);
+  --title: rgb(0, 0, 0);
+  --shadows: 0 1px 2px #7b9ebb;
+}
+
+body {
+  margin: 0;
+  background: var(--background-color);
   overflow-x: hidden;
+  transition: background 1s ease;
 }
 
 canvas {

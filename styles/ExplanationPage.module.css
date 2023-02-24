@@ -3,20 +3,20 @@
   top: 100vh;
   height: 100vh;
   width: 100vw;
-  background-color: #534fc6;
+  background: var(--explanation);
   text-align: justify;
   text-justify: inter-word;
 }
 
 .lorem {
-  color: #f5fdfe;
+  color: var(--explanation-text);
   font-family: "Poppins", sans-serif;
   font-size: 30px;
   margin: 10% 10% 5%;
 }
 
 .cicero {
-  color: #f5fdfe;
+  color: var(--explanation-text);
   font-family: "Poppins", sans-serif;
   font-size: 18px;
   margin: 0 10%;

@@ -1,7 +1,6 @@
 .toggle {
   cursor: pointer;
   display: inline-block;
-  margin-top: 20px;
   margin-right: 20px;
 }
 
@@ -14,6 +13,7 @@
   position: relative;
   vertical-align: middle;
   transition: background 0.25s;
+  box-shadow: var(--shadows);
 }
 
 .switch:before,
@@ -34,11 +34,11 @@
 }
 
 .toggle:hover .switch:before {
-  background: rgb(245, 245, 245);
+  background: rgb(238, 235, 248);
 }
 
 .checkbox:checked + .switch {
-  background: #89cff0;
+  background: #b4d63a;
 }
 
 .checkbox:checked + .switch:before {
