@@ -1,4 +1,18 @@
-export type User = {
+type Geometry = {
+  date: string;
+  type: "Point" | "Polygon";
+  coordinates: [number, number];
+};
+
+type Category = {
   id: number;
-  name?: string;
+  title: string;
+};
+
+export type Event = {
+  id: string;
+  title: string;
+  description: string;
+  categories: Category[];
+  geometries: Geometry[];
 };
