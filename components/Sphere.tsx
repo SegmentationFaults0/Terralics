@@ -265,7 +265,7 @@ export default function Sphere() {
       {loaded ? (
         <div className={styles.legende}>
           <p className={styles.description}>press Z to zoom in</p>
-          <p className={styles.description}>press Z to zoom in</p>
+          <p className={styles.description}>press E to zoom in</p>
         </div>
       ) : (
         <LoadingAnimation />
