@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, startTransition } from "react";
 import {
   Scene,
   PerspectiveCamera,
@@ -15,6 +15,7 @@ import {
   ShaderMaterial,
   BackSide,
   AdditiveBlending,
+  MeshPhongMaterial,
 } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import LoadingAnimation from "./LoadingAnimation";
@@ -22,8 +23,7 @@ import styles from "../styles/Sphere.module.css";
 
 export default function Sphere() {
   const [loaded, setLoaded] = useState(false);
-  // TODO: how to check if user has clicked?
-  const [userInteracted] = useState(false);
+  let [clicked, setClicked] = useState(false);
   const mountRef = useRef<HTMLDivElement>(null);
   const sizes = {
     width: window.innerWidth,
@@ -37,7 +37,8 @@ export default function Sphere() {
   // Loaders
   const loadingManager = new LoadingManager();
   const textureLoader = new TextureLoader(loadingManager);
-  const globeTexture = textureLoader.load("/Albedo-diffuse.jpg");
+  const globeTexture = textureLoader.load("/textureTerralics.png");
+  const stars = textureLoader.load("/stars.png");
   loadingManager.onStart = () => {
     console.log("loading started");
   };
@@ -103,6 +104,20 @@ export default function Sphere() {
   glowMesh.visible = true;
   scene.add(glowMesh);
 
+  // Skybox
+  var geometry = new SphereGeometry(100, 90, 50);
+  var material = new MeshPhongMaterial({
+    map: stars,
+    shininess: 100,
+    transparent: true,
+    side: BackSide,
+    blending: AdditiveBlending,
+    depthWrite: false,
+  });
+
+  var sphere = new Mesh(geometry, material);
+  scene.add(sphere);
+
   // Camera
   const camera = new PerspectiveCamera(
     47.5,
@@ -116,10 +131,10 @@ export default function Sphere() {
   // Lighting
   const light1 = new PointLight(0xf3edba, 1, 100);
   light1.position.set(-10, 6, 16);
-  light1.intensity = 1.8;
+  light1.intensity = 1;
   scene.add(light1);
   camera.add(light1);
-  const ambientLight = new AmbientLight(0xffffff, 0.1);
+  const ambientLight = new AmbientLight(0xffffff, 0.8);
   scene.add(ambientLight);
 
   // TODO:
@@ -141,13 +156,20 @@ export default function Sphere() {
     renderer.render(scene, camera);
     current.appendChild(domElement);
 
+    // TODO: setClicked() werkt niet!
+    renderer.domElement.addEventListener("click", () => {
+      console.log(clicked);
+      console.log("clicked");
+      setClicked(true);
+      console.log(clicked);
+    });
+
     // OrbitControls
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     controls.enablePan = false;
     controls.enableZoom = false;
 
-    //werkt nog niet bij resize door middel van maximise-knop
     //Resize
     const updateResize = () => {
       sizes.width = window.innerWidth;
@@ -165,7 +187,7 @@ export default function Sphere() {
     function animate() {
       const elapsed = clock.getElapsedTime();
       controls.update();
-      if (!userInteracted) {
+      if (!clicked) {
         globe.rotation.y = elapsed * 0.1;
       }
       renderer.render(scene, camera);
@@ -182,10 +204,10 @@ export default function Sphere() {
     <div ref={mountRef}>
       {loaded ? (
         <div className={styles.zoomcontainer}>
-          <button className={styles.zoombutton} type="button" onClick={zoomIn}>
+          <button className={styles.zoombutton} type="button" id="zoomIn">
             +
           </button>
-          <button className={styles.zoombutton} type="button" onClick={zoomOut}>
+          <button className={styles.zoombutton} type="button" id="zoomOut">
             -
           </button>
         </div>
