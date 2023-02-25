@@ -2,7 +2,6 @@ import type { Event } from "../interfaces";
 import useSwr from "swr";
 import Sphere from "../components/Sphere";
 import ExplanationPage from "../components/ExplanationPage";
-import Navbar from "../components/Navbar";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
