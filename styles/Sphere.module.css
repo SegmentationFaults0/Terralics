@@ -1,28 +1,20 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
-
-.zoombutton {
-  background-color: #534fc6;
-  border-radius: 50%;
-  color: white;
-  border: none;
-  padding: none;
-  font-size: 20px;
-  height: 40px;
-  width: 40px;
-  box-shadow: 0 1px 2px rgb(0, 0, 0);
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.zoombutton:hover {
-  background-color: #5955c6;
-}
-
-.zoomcontainer {
+.legende {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   position: absolute;
-  top: 50%;
-  margin-left: 10px;
+  width: auto;
+  bottom: 0;
+  right: 0;
+  margin: 0;
+  padding: 0;
+  z-index: 2;
+}
+
+.description {
+  font-family: "Poppins", sans-serif;
+  color: white;
+  font-size: 10px;
+  margin: 0;
 }
