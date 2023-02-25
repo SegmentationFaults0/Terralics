@@ -15,17 +15,15 @@ import {
   ShaderMaterial,
   BackSide,
   AdditiveBlending,
-  Vector3,
 } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import LoadingAnimation from "./LoadingAnimation";
 import styles from "../styles/Sphere.module.css";
-import { isModuleNamespaceObject } from "util/types";
 
 export default function Sphere() {
   const [loaded, setLoaded] = useState(false);
   // TODO: how to check if user has clicked?
-  const [userInteracted, setUserInteracted] = useState(false);
+  const [userInteracted] = useState(false);
   const mountRef = useRef<HTMLDivElement>(null);
   const sizes = {
     width: window.innerWidth,
