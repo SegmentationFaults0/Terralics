@@ -1,12 +1,19 @@
+.toggleContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 4px;
+  margin-right: 20px;
+}
+
 .toggle {
   cursor: pointer;
   display: inline-block;
-  margin-right: 20px;
 }
 
 .switch {
   display: inline-block;
-  background: #534fc6;
+  background: var(--buttons);
   border-radius: 16px;
   width: 58px;
   height: 32px;
@@ -48,4 +55,8 @@
 .checkbox {
   position: absolute;
   visibility: hidden;
+}
+
+.emoji {
+  font-size: x-large;
 }

@@ -1,7 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
 
 .zoombutton {
-  background-color: var(--purple);
+  background-color: var(--buttons);
   border-radius: 50%;
   color: white;
   border: none;
@@ -15,7 +15,7 @@
 }
 
 .zoombutton:hover {
-  background-color: var(--purple-hover);
+  background-color: var(--buttons-hover);
 }
 
 .zoomcontainer {

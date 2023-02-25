@@ -9,13 +9,17 @@ const toggleTheme: ChangeEventHandler<HTMLInputElement> = (e) => {
 
 export default function ToggleSwitch() {
   return (
-    <label className={styles.toggle}>
-      <input
-        className={styles.checkbox}
-        type="checkbox"
-        onChange={toggleTheme}
-      />
-      <div className={styles.switch}></div>
-    </label>
+    <div className={styles.toggleContainer}>
+      <span className={styles.emoji}>🌒</span>
+      <label className={styles.toggle}>
+        <input
+          className={styles.checkbox}
+          type="checkbox"
+          onChange={toggleTheme}
+        />
+        <div className={styles.switch}></div>
+      </label>
+      <span className={styles.emoji}>☀️</span>
+    </div>
   );
 }

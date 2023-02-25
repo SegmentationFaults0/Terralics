@@ -5,17 +5,17 @@
     rgb(3, 1, 29),
     rgb(17, 3, 56)
   );
-  --purple-bg: #534fc6;
-  --purple: #534fc6;
-  --purple-hover: #5955c6;
+  --info-bg: #534fc6;
+  --buttons: #534fc6;
+  --buttons-hover: #5955c6;
   --shadows: 0 1px 2px rgb(0, 0, 0);
 }
 
 [data-theme="light"] {
   --background-color: #dceed0;
-  --purple-bg: linear-gradient(-60deg, #4da016 0%, #b4d63a 100%);
-  --purple: #b4d63a;
-  --purple-hover: rgb(238, 235, 248);
+  --info-bg: linear-gradient(-60deg, #4da016 0%, #b4d63a 100%);
+  --buttons: #b4d63a;
+  --buttons-hover: rgb(238, 235, 248);
   --shadows: 0 1px 2px #7b9ebb;
 }
 

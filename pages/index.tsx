@@ -16,7 +16,6 @@ export default function Index() {
   return (
     <div>
       <div>
-        <Navbar />
         <Sphere />
       </div>
       <ExplanationPage />
