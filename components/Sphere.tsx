@@ -16,6 +16,8 @@ import {
   BackSide,
   AdditiveBlending,
   MeshPhongMaterial,
+  Vector3,
+  MeshBasicMaterial,
 } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import LoadingAnimation from "./LoadingAnimation";
@@ -23,7 +25,7 @@ import styles from "../styles/Sphere.module.css";
 
 export default function Sphere() {
   const [loaded, setLoaded] = useState(false);
-  let [clicked, setClicked] = useState(false);
+  let [clicked, setClicked] = useState(true);
   const mountRef = useRef<HTMLDivElement>(null);
   const sizes = {
     width: window.innerWidth,
@@ -137,6 +139,58 @@ export default function Sphere() {
   const ambientLight = new AmbientLight(0xffffff, 0.8);
   scene.add(ambientLight);
 
+  // Coordinaten-mapper
+  // [LATITUDE, LONGITUDE]
+  const brussels = [50.85045, 4.34878];
+  const newYork = [40.71427, -74.00597];
+  const paris = [48.85341, 2.3488];
+  const brazzaville = [-4.26613, 15.28318];
+  const sanJose = [9.93333, -84.08333];
+  const mumbai = [19.07283, 72.88261];
+  const hoChiMinCity = [10.82302, 106.62965];
+  const tokyo = [35.6895, 139.69171];
+  const sydney = [-33.86785, 151.20732];
+  const hawai = [19.6024, -155.52289];
+  const cities = [
+    brussels,
+    newYork,
+    paris,
+    brazzaville,
+    sanJose,
+    mumbai,
+    hoChiMinCity,
+    tokyo,
+    sydney,
+    hawai,
+  ];
+
+  const getCarthesian = (lat, lon) => {
+    const phi = (90 - lat) * (Math.PI / 180),
+      theta = (lon + 180) * (Math.PI / 180),
+      x = -(radius * Math.sin(phi) * Math.cos(theta)),
+      z = radius * Math.sin(phi) * Math.sin(theta),
+      y = radius * Math.cos(phi);
+
+    return new Vector3(x, y, z);
+  };
+  const placePinpoint = (lat, lon) => {
+    let carthVector = getCarthesian(lat, lon);
+    const pinpointGeometry = new SphereGeometry(0.05, 16, 16);
+    const pinpointMaterial = new MeshBasicMaterial({
+      color: 0xff0000,
+    });
+    const pinpointMesh = new Mesh(pinpointGeometry, pinpointMaterial);
+    pinpointMesh.position.set(carthVector.x, carthVector.y, carthVector.z);
+    scene.add(pinpointMesh);
+    globe.add(pinpointMesh);
+  };
+  const placeAllpinpoints = () => {
+    for (let i = 0; i < cities.length; i++) {
+      placePinpoint(cities[i][0], cities[i][1]);
+    }
+  };
+  placeAllpinpoints();
+
   // TODO:
   const zoomIn = () => {};
   const zoomOut = () => {};
@@ -158,10 +212,8 @@ export default function Sphere() {
 
     // TODO: setClicked() werkt niet!
     renderer.domElement.addEventListener("click", () => {
-      console.log(clicked);
       console.log("clicked");
       setClicked(true);
-      console.log(clicked);
     });
 
     // OrbitControls
@@ -200,20 +252,5 @@ export default function Sphere() {
     };
   }, []);
 
-  return (
-    <div ref={mountRef}>
-      {loaded ? (
-        <div className={styles.zoomcontainer}>
-          <button className={styles.zoombutton} type="button" id="zoomIn">
-            +
-          </button>
-          <button className={styles.zoombutton} type="button" id="zoomOut">
-            -
-          </button>
-        </div>
-      ) : (
-        <LoadingAnimation />
-      )}
-    </div>
-  );
+  return <div ref={mountRef}>{loaded ? <></> : <LoadingAnimation />}</div>;
 }
