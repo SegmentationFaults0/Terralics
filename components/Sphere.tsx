@@ -19,6 +19,8 @@ import {
   Vector3,
   MeshBasicMaterial,
 } from "three";
+import { FontLoader } from "three/examples/jsm/loaders/FontLoader";
+import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import LoadingAnimation from "./LoadingAnimation";
 import styles from "../styles/Sphere.module.css";
@@ -165,6 +167,44 @@ export default function Sphere() {
       sydney,
       hawai,
     ];
+
+    let fontLoader = new FontLoader();
+    fontLoader.load("/Poppins_Regular.json", (font) => {
+      let geometry = new TextGeometry("Brussel", {
+        font: font,
+        size: 0.1,
+        height: 0.05,
+        curveSegements: 6,
+        bevelEnabled: false,
+        bevelThickness: 0.1,
+        bevelSize: 0.1,
+        bevelSegments: 0.1,
+      });
+      let txt_mat = new MeshPhongMaterial({ color: 0xff0000 });
+      let txt_mesh = new Mesh(geometry, txt_mat);
+      let positionBrussel = getCarthesian(50.85045, 4.34878);
+      txt_mesh.position.x = positionBrussel.x;
+      txt_mesh.position.y = positionBrussel.y;
+      txt_mesh.position.z = positionBrussel.z;
+      txt_mesh.rotation.y = Math.PI / 2.5;
+      globe.add(txt_mesh);
+      let geometry2 = new TextGeometry("New York", {
+        font: font,
+        size: 0.1,
+        height: 0.05,
+        curveSegements: 6,
+        bevelEnabled: false,
+        bevelThickness: 0.1,
+        bevelSize: 0.1,
+        bevelSegments: 0.1,
+      });
+      let txt_mesh2 = new Mesh(geometry2, txt_mat);
+      let positionNewYork = getCarthesian(40.71427, -74.00597);
+      txt_mesh2.position.x = positionNewYork.x;
+      txt_mesh2.position.y = positionNewYork.y;
+      txt_mesh2.position.z = positionNewYork.z;
+      globe.add(txt_mesh2);
+    });
 
     const getCarthesian = (lat, lon) => {
       const phi = (90 - lat) * (Math.PI / 180),
