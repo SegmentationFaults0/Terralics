@@ -34,6 +34,7 @@ export default function Sphere() {
     height: window.innerHeight,
   };
   const radius = 3;
+  const textRadius = 3.2;
 
   useEffect(() => {
     const { current } = mountRef;
@@ -145,16 +146,16 @@ export default function Sphere() {
 
     // Coordinaten-mapper
     // [LATITUDE, LONGITUDE]
-    const brussels = [50.85045, 4.34878];
-    const newYork = [40.71427, -74.00597];
-    const paris = [48.85341, 2.3488];
-    const brazzaville = [-4.26613, 15.28318];
-    const sanJose = [9.93333, -84.08333];
-    const mumbai = [19.07283, 72.88261];
-    const hoChiMinCity = [10.82302, 106.62965];
-    const tokyo = [35.6895, 139.69171];
-    const sydney = [-33.86785, 151.20732];
-    const hawai = [19.6024, -155.52289];
+    const brussels = [50.85045, 4.34878, "Brussels"];
+    const newYork = [40.71427, -74.00597, "New York"];
+    const paris = [48.85341, 2.3488, "Paris"];
+    const brazzaville = [-4.26613, 15.28318, "Brazzaville"];
+    const sanJose = [9.93333, -84.08333, "San José"];
+    const mumbai = [19.07283, 72.88261, "Mumbai"];
+    const hoChiMinCity = [10.82302, 106.62965, "Ho Chi Min City"];
+    const tokyo = [35.6895, 139.69171, "Tokyo"];
+    const sydney = [-33.86785, 151.20732, "Sydney"];
+    const hawai = [19.6024, -155.52289, "Hawaï"];
     const cities = [
       brussels,
       newYork,
@@ -169,54 +170,42 @@ export default function Sphere() {
     ];
 
     let fontLoader = new FontLoader();
-    fontLoader.load("/Poppins_Regular.json", (font) => {
-      let geometry = new TextGeometry("Brussel", {
-        font: font,
-        size: 0.1,
-        height: 0.05,
-        curveSegements: 6,
-        bevelEnabled: false,
-        bevelThickness: 0.1,
-        bevelSize: 0.1,
-        bevelSegments: 0.1,
+    const placeAllNames = (cities) => {
+      fontLoader.load("/Poppins_Regular.json", (font) => {
+        for (let i = 0; i < cities.length; i++) {
+          let geometry = new TextGeometry(cities[i][2], {
+            font: font,
+            size: 0.1,
+            height: 0.025,
+            curveSegements: 6,
+            bevelEnabled: false,
+            bevelThickness: 0.1,
+            bevelSize: 0.1,
+            bevelSegments: 0.1,
+          });
+          let txt_mat = new MeshPhongMaterial({ color: 0xffffff });
+          let txt_mesh = new Mesh(geometry, txt_mat);
+          let position = getCarthesian(cities[i][0], cities[i][1], textRadius);
+          txt_mesh.position.set(position.x, position.y, position.z);
+          txt_mesh.lookAt(
+            new Vector3(position.x * 5, position.y * 5, position.z * 5)
+          );
+          globe.add(txt_mesh);
+        }
       });
-      let txt_mat = new MeshPhongMaterial({ color: 0xff0000 });
-      let txt_mesh = new Mesh(geometry, txt_mat);
-      let positionBrussel = getCarthesian(50.85045, 4.34878);
-      txt_mesh.position.x = positionBrussel.x;
-      txt_mesh.position.y = positionBrussel.y;
-      txt_mesh.position.z = positionBrussel.z;
-      txt_mesh.rotation.y = Math.PI / 2.5;
-      globe.add(txt_mesh);
-      let geometry2 = new TextGeometry("New York", {
-        font: font,
-        size: 0.1,
-        height: 0.05,
-        curveSegements: 6,
-        bevelEnabled: false,
-        bevelThickness: 0.1,
-        bevelSize: 0.1,
-        bevelSegments: 0.1,
-      });
-      let txt_mesh2 = new Mesh(geometry2, txt_mat);
-      let positionNewYork = getCarthesian(40.71427, -74.00597);
-      txt_mesh2.position.x = positionNewYork.x;
-      txt_mesh2.position.y = positionNewYork.y;
-      txt_mesh2.position.z = positionNewYork.z;
-      globe.add(txt_mesh2);
-    });
+    };
 
-    const getCarthesian = (lat, lon) => {
+    const getCarthesian = (lat, lon, r) => {
       const phi = (90 - lat) * (Math.PI / 180),
         theta = (lon + 180) * (Math.PI / 180),
-        x = -(radius * Math.sin(phi) * Math.cos(theta)),
-        z = radius * Math.sin(phi) * Math.sin(theta),
-        y = radius * Math.cos(phi);
+        x = -(r * Math.sin(phi) * Math.cos(theta)),
+        z = r * Math.sin(phi) * Math.sin(theta),
+        y = r * Math.cos(phi);
 
       return new Vector3(x, y, z);
     };
-    const placePinpoint = (lat, lon) => {
-      let carthVector = getCarthesian(lat, lon);
+    const placePinpoint = (lat, lon, r) => {
+      let carthVector = getCarthesian(lat, lon, r);
       const pinpointGeometry = new SphereGeometry(0.05, 16, 16);
       const pinpointMaterial = new MeshBasicMaterial({
         color: 0xff0000,
@@ -226,12 +215,13 @@ export default function Sphere() {
       scene.add(pinpointMesh);
       globe.add(pinpointMesh);
     };
-    const placeAllpinpoints = () => {
+    const placeAllpinpoints = (cities) => {
       for (let i = 0; i < cities.length; i++) {
-        placePinpoint(cities[i][0], cities[i][1]);
+        placePinpoint(cities[i][0], cities[i][1], radius);
       }
     };
-    placeAllpinpoints();
+    placeAllpinpoints(cities);
+    placeAllNames(cities);
 
     // Zoom controls
     window.addEventListener("keypress", (e) => {
