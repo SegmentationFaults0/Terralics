@@ -18,3 +18,23 @@
   font-size: 10px;
   margin: 0;
 }
+
+.label {
+  z-index: 2;
+  background-color: white;
+  font-family: "Poppins", sans-serif;
+  color: black;
+  font-size: 20px;
+  padding: 10px;
+  opacity: 0;
+  transition-duration: 0.2s;
+  transition-property: opacity;
+}
+
+.hide {
+  opacity: 0;
+}
+
+.show {
+  opacity: 0;
+}

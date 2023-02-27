@@ -18,21 +18,47 @@ import {
   MeshPhongMaterial,
   Vector3,
   MeshBasicMaterial,
+  Group,
+  Vector2,
+  Raycaster,
 } from "three";
-import { FontLoader } from "three/examples/jsm/loaders/FontLoader";
-import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import LoadingAnimation from "./LoadingAnimation";
 import styles from "../styles/Sphere.module.css";
+import {
+  CSS2DRenderer,
+  CSS2DObject,
+} from "three/examples/jsm/renderers/CSS2DRenderer";
+import { create } from "domain";
+
+// [LATITUDE, LONGITUDE]
+const brussels = [50.85045, 4.34878, "Brussels"];
+const newYork = [40.71427, -74.00597, "New York"];
+const paris = [48.85341, 2.3488, "Paris"];
+const brazzaville = [-4.26613, 15.28318, "Brazzaville"];
+const sanJose = [9.93333, -84.08333, "San José"];
+const mumbai = [19.07283, 72.88261, "Mumbai"];
+const hoChiMinCity = [10.82302, 106.62965, "Ho Chi Min City"];
+const tokyo = [35.6895, 139.69171, "Tokyo"];
+const sydney = [-33.86785, 151.20732, "Sydney"];
+const hawai = [19.6024, -155.52289, "Hawaï"];
+const points = [
+  brussels,
+  newYork,
+  paris,
+  brazzaville,
+  sanJose,
+  mumbai,
+  hoChiMinCity,
+  tokyo,
+  sydney,
+  hawai,
+];
 
 export default function Sphere() {
   const [loaded, setLoaded] = useState(false);
   let [clicked, setClicked] = useState(true);
   const mountRef = useRef<HTMLDivElement>(null);
-  const sizes = {
-    width: window.innerWidth,
-    height: window.innerHeight,
-  };
   const radius = 3;
   const textRadius = 3.2;
 
@@ -128,7 +154,7 @@ export default function Sphere() {
     // Camera
     const camera = new PerspectiveCamera(
       47.5,
-      sizes.width / sizes.height,
+      window.innerWidth / window.innerHeight,
       0.1,
       110
     );
@@ -145,56 +171,6 @@ export default function Sphere() {
     scene.add(ambientLight);
 
     // Coordinaten-mapper
-    // [LATITUDE, LONGITUDE]
-    const brussels = [50.85045, 4.34878, "Brussels"];
-    const newYork = [40.71427, -74.00597, "New York"];
-    const paris = [48.85341, 2.3488, "Paris"];
-    const brazzaville = [-4.26613, 15.28318, "Brazzaville"];
-    const sanJose = [9.93333, -84.08333, "San José"];
-    const mumbai = [19.07283, 72.88261, "Mumbai"];
-    const hoChiMinCity = [10.82302, 106.62965, "Ho Chi Min City"];
-    const tokyo = [35.6895, 139.69171, "Tokyo"];
-    const sydney = [-33.86785, 151.20732, "Sydney"];
-    const hawai = [19.6024, -155.52289, "Hawaï"];
-    const cities = [
-      brussels,
-      newYork,
-      paris,
-      brazzaville,
-      sanJose,
-      mumbai,
-      hoChiMinCity,
-      tokyo,
-      sydney,
-      hawai,
-    ];
-
-    let fontLoader = new FontLoader();
-    const placeAllNames = (cities) => {
-      fontLoader.load("/Poppins_Regular.json", (font) => {
-        for (let i = 0; i < cities.length; i++) {
-          let geometry = new TextGeometry(cities[i][2], {
-            font: font,
-            size: 0.1,
-            height: 0.025,
-            curveSegements: 6,
-            bevelEnabled: false,
-            bevelThickness: 0.1,
-            bevelSize: 0.1,
-            bevelSegments: 0.1,
-          });
-          let txt_mat = new MeshPhongMaterial({ color: 0xffffff });
-          let txt_mesh = new Mesh(geometry, txt_mat);
-          let position = getCarthesian(cities[i][0], cities[i][1], textRadius);
-          txt_mesh.position.set(position.x, position.y, position.z);
-          txt_mesh.lookAt(
-            new Vector3(position.x * 5, position.y * 5, position.z * 5)
-          );
-          globe.add(txt_mesh);
-        }
-      });
-    };
-
     const getCarthesian = (lat, lon, r) => {
       const phi = (90 - lat) * (Math.PI / 180),
         theta = (lon + 180) * (Math.PI / 180),
@@ -204,24 +180,64 @@ export default function Sphere() {
 
       return new Vector3(x, y, z);
     };
-    const placePinpoint = (lat, lon, r) => {
-      let carthVector = getCarthesian(lat, lon, r);
-      const pinpointGeometry = new SphereGeometry(0.05, 16, 16);
-      const pinpointMaterial = new MeshBasicMaterial({
-        color: 0xff0000,
-      });
-      const pinpointMesh = new Mesh(pinpointGeometry, pinpointMaterial);
-      pinpointMesh.position.set(carthVector.x, carthVector.y, carthVector.z);
-      scene.add(pinpointMesh);
-      globe.add(pinpointMesh);
+    const createPOIMesh = (infoShort, vector) => {
+      const geo = new SphereGeometry(0.05);
+      const mat = new MeshBasicMaterial({ color: 0xff0000 });
+      const mesh = new Mesh(geo, mat);
+      mesh.position.set(vector.x, vector.y, vector.z);
+      mesh.name = infoShort;
+      return mesh;
     };
-    const placeAllpinpoints = (cities) => {
-      for (let i = 0; i < cities.length; i++) {
-        placePinpoint(cities[i][0], cities[i][1], radius);
+    const POIGroup = new Group();
+    const drawPOI = (points) => {
+      for (let i = 0; i < points.length; i++) {
+        let POI = createPOIMesh(
+          points[i][2],
+          getCarthesian(points[i][0], points[i][1], radius)
+        );
+        POIGroup.add(POI);
       }
+      scene.add(POIGroup);
     };
-    placeAllpinpoints(cities);
-    placeAllNames(cities);
+    drawPOI(points);
+
+    const p = document.createElement("p");
+    p.className = "label";
+    const pContainer = document.createElement("div");
+    pContainer.appendChild(p);
+    const pointLabel = new CSS2DObject(pContainer);
+    scene.add(pointLabel);
+
+    const mousePos = new Vector2();
+    const raycaster = new Raycaster();
+
+    window.addEventListener("mousemove", (e) => {
+      mousePos.x = (e.clientX / window.innerWidth) * 2 - 1;
+      mousePos.y = -(e.clientY / window.innerHeight) * 2 + 1;
+
+      raycaster.setFromCamera(mousePos, camera);
+      const intersects = raycaster.intersectObject(POIGroup);
+      if (intersects.length > 0) {
+        for (let i = 0; i < points.length; i++) {
+          if (intersects[0].object.name == points[i][2]) {
+            p.className = "label show";
+            const pos = getCarthesian(points[i][0], points[i][1], textRadius);
+            pointLabel.position.set(pos.x, pos.y, pos.z);
+            p.textContent = points[i][2].toString();
+          } else {
+            p.className = "label hide";
+          }
+        }
+      }
+    });
+
+    // Labels
+    const labelRenderer = new CSS2DRenderer();
+    labelRenderer.setSize(window.innerWidth, window.innerHeight);
+    labelRenderer.domElement.style.position = "absolute";
+    labelRenderer.domElement.style.top = "0px";
+    labelRenderer.domElement.style.pointerEvents = "none";
+    document.body.appendChild(labelRenderer.domElement);
 
     // Zoom controls
     window.addEventListener("keypress", (e) => {
@@ -242,7 +258,7 @@ export default function Sphere() {
       alpha: true,
     });
     const { domElement } = renderer;
-    renderer.setSize(sizes.width, sizes.height);
+    renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     //document.body.appendChild(renderer.domElement);
     renderer.render(scene, camera);
@@ -250,7 +266,6 @@ export default function Sphere() {
 
     // TODO: setClicked() werkt niet!
     renderer.domElement.addEventListener("click", () => {
-      console.log("clicked");
       setClicked(true);
     });
 
@@ -262,12 +277,11 @@ export default function Sphere() {
 
     //Resize
     const updateResize = () => {
-      sizes.width = window.innerWidth;
-      sizes.height = window.innerHeight;
       camera.updateProjectionMatrix();
-      camera.aspect = sizes.width / sizes.height;
-      renderer.setSize(sizes.width, sizes.height);
+      camera.aspect = window.innerWidth / window.innerHeight;
+      renderer.setSize(window.innerWidth, window.innerHeight);
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      labelRenderer.setSize(window.innerWidth, window.innerHeight);
     };
     window.addEventListener("resize", () => {
       updateResize();
@@ -280,6 +294,7 @@ export default function Sphere() {
       if (!clicked) {
         globe.rotation.y = elapsed * 0.1;
       }
+      labelRenderer.render(scene, camera);
       renderer.render(scene, camera);
       requestAnimationFrame(animate);
     }
@@ -295,7 +310,7 @@ export default function Sphere() {
       {loaded ? (
         <div className={styles.legende}>
           <p className={styles.description}>press Z to zoom in</p>
-          <p className={styles.description}>press E to zoom in</p>
+          <p className={styles.description}>press E to zoom out</p>
         </div>
       ) : (
         <LoadingAnimation />
