@@ -1,5 +1,5 @@
 import styles from "../styles/Navbar.module.css";
-import ToggleSwitch from "./ToggleSwitch";
+import DarkToggle from "./DarkToggle";
 import Boxlogo from "../public/logo_text_white_box.svg";
 import Image from "next/image";
 
@@ -12,7 +12,7 @@ export default function LoadingAnimation() {
         height={50}
         className={styles.title}
       />
-      <ToggleSwitch />
+      <DarkToggle />
     </div>
   );
 }
