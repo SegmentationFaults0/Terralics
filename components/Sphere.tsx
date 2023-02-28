@@ -62,6 +62,7 @@ export default function Sphere() {
   const radius = 3;
   const textRadius = 3.2;
 
+  console.log("suiiiii");
   useEffect(() => {
     const { current } = mountRef;
 
@@ -202,7 +203,6 @@ export default function Sphere() {
     drawPOI(points);
 
     const p = document.createElement("p");
-    p.className = "label";
     const pContainer = document.createElement("div");
     pContainer.appendChild(p);
     const pointLabel = new CSS2DObject(pContainer);
@@ -211,7 +211,7 @@ export default function Sphere() {
     const mousePos = new Vector2();
     const raycaster = new Raycaster();
 
-    window.addEventListener("mousemove", (e) => {
+    window.addEventListener("click", (e) => {
       mousePos.x = (e.clientX / window.innerWidth) * 2 - 1;
       mousePos.y = -(e.clientY / window.innerHeight) * 2 + 1;
 
