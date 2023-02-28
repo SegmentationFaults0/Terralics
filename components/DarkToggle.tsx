@@ -1,5 +1,7 @@
 import styles from "../styles/DarkToggle.module.css";
 import { useState, useEffect } from "react";
+import { faMoon, faLightbulb } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 type Theme = "light" | "dark";
 
@@ -27,7 +29,6 @@ export default function DarkToggle() {
 
   return (
     <div className={styles.toggleContainer}>
-      <span className={styles.emoji}>🌒</span>
       <label className={styles.toggle}>
         <input
           className={styles.checkbox}
@@ -35,9 +36,11 @@ export default function DarkToggle() {
           checked={theme === "light"}
           onChange={() => setTheme(theme === "dark" ? "light" : "dark")}
         />
-        <div className={styles.switch}></div>
+        <div className={styles.switch}>
+          <FontAwesomeIcon className={styles.light} icon={faLightbulb} />
+          <FontAwesomeIcon className={styles.moon} icon={faMoon} />
+        </div>
       </label>
-      <span className={styles.emoji}>☀️</span>
     </div>
   );
 }

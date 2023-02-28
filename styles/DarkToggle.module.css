@@ -12,11 +12,13 @@
 }
 
 .switch {
-  display: inline-block;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   background: var(--buttons);
-  border-radius: 16px;
-  width: 58px;
-  height: 32px;
+  border-radius: 18px;
+  width: 65px;
+  height: 36px;
   position: relative;
   vertical-align: middle;
   transition: background 0.25s;
@@ -32,12 +34,13 @@
   display: block;
   background: white;
   border-radius: 50%;
-  width: 24px;
-  height: 24px;
+  width: 28px;
+  height: 28px;
   position: absolute;
   top: 4px;
   left: 4px;
   transition: left 0.25s;
+  z-index: 3;
 }
 
 .toggle:hover .switch:before {
@@ -49,7 +52,7 @@
 }
 
 .checkbox:checked + .switch:before {
-  left: 30px;
+  left: 32px;
 }
 
 .checkbox {
@@ -57,6 +60,14 @@
   visibility: hidden;
 }
 
-.emoji {
-  font-size: x-large;
+.light {
+  transform: scale(1.1);
+  margin-left: 12px;
+  color: white;
+}
+
+.moon {
+  transform: scale(1.1);
+  color: white;
+  margin-left: 4px;
 }
