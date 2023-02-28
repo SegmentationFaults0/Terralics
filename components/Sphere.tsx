@@ -24,12 +24,12 @@ import {
 } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import LoadingAnimation from "./LoadingAnimation";
+import Label from "./Label";
 import styles from "../styles/Sphere.module.css";
 import {
   CSS2DRenderer,
   CSS2DObject,
 } from "three/examples/jsm/renderers/CSS2DRenderer";
-import { create } from "domain";
 
 // [LATITUDE, LONGITUDE]
 const brussels = [50.85045, 4.34878, "Brussels"];
@@ -199,19 +199,22 @@ export default function Sphere() {
         POIGroup.add(POI);
       }
       scene.add(POIGroup);
+      globe.add(POIGroup);
     };
     drawPOI(points);
 
-    const p = document.createElement("p");
-    const pContainer = document.createElement("div");
-    pContainer.appendChild(p);
-    const pointLabel = new CSS2DObject(pContainer);
+    const labeldiv = document.createElement("div");
+    const labelContainer = document.createElement("div");
+    labelContainer.appendChild(labeldiv);
+    const pointLabel = new CSS2DObject(labelContainer);
     scene.add(pointLabel);
+    globe.add(pointLabel);
 
     const mousePos = new Vector2();
     const raycaster = new Raycaster();
 
     window.addEventListener("click", (e) => {
+      setClicked(true);
       mousePos.x = (e.clientX / window.innerWidth) * 2 - 1;
       mousePos.y = -(e.clientY / window.innerHeight) * 2 + 1;
 
@@ -220,12 +223,14 @@ export default function Sphere() {
       if (intersects.length > 0) {
         for (let i = 0; i < points.length; i++) {
           if (intersects[0].object.name == points[i][2]) {
-            p.className = "label show";
+            labeldiv.className = "labeldiv show";
             const pos = getCarthesian(points[i][0], points[i][1], textRadius);
             pointLabel.position.set(pos.x, pos.y, pos.z);
-            p.textContent = points[i][2].toString();
+            labeldiv.innerHTML = `<div style="background-color: beige; padding: 10px; border-radius: 10px">
+            <h1 style="margin:0px;">${points[i][2]}</h1>
+            <p style="color:black;width:200px;">Lorem ipsum dolor sit amet consectetur adipisicing elit. Nisi enim quos dolore adipisci ipsum odio error exercitationem voluptas nobis!</p></div>`;
           } else {
-            p.className = "label hide";
+            labeldiv.className = "labeldiv hide";
           }
         }
       }
