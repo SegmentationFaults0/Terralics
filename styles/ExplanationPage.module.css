@@ -3,7 +3,7 @@
   top: 100vh;
   height: 100vh;
   width: 100vw;
-  background-color: #534fc6;
+  background: var(--info-bg);
   text-align: justify;
   text-justify: inter-word;
 }
